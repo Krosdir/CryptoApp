@@ -28,8 +28,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = appWindow
         
-        UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor: UIColor(Color.theme.secondaryText)], for: .normal)
-        UITabBar.appearance().tintColor = UIColor(Color.theme.secondaryText)
+        UIBarButtonItem.appearance().tintColor = UIColor(Color.theme.accent)
+        UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor: UIColor(Color.theme.accent)], for: .normal)
+        UITabBar.appearance().tintColor = UIColor(Color.theme.accent)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

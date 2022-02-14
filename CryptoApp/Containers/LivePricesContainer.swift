@@ -11,7 +11,6 @@ import UIKit
 public class LivePricesContainer {
     
     let coordinator: LivePricesCoordinator
-    var viewModel: LivePricesViewModel?
     
     // MARK: - Methods
     public init(appContainer: AppContainer) {
@@ -32,14 +31,23 @@ public class LivePricesContainer {
         return LivePricesViewModel(repository: repository)
     }
     
-    func makeEditPortfolioViewModel() -> EditProfileViewModel {
+    func makeEditPortfolioViewModel(with coins: [Coin]) -> EditProfileViewModel {
         let viewModel = EditProfileViewModel()
-        viewModel.allCoins = self.viewModel?.allCoins ?? []
+        viewModel.allCoins = coins
         return viewModel
+    }
+    
+    func makeCoinDetailsViewModel(for coin: Coin) -> CoinDetailsViewModel {
+        let repository = makeCoinDetailsRepository()
+        return CoinDetailsViewModel(
+            coin: coin,
+            repository: repository
+        )
     }
 }
 
 private extension LivePricesContainer {
+    // Live Prices
     func makeLivePricesNetworkService() -> LivePricesNetworkStrategy {
         #if DEBUG
         return LivePricesFakeNetworkService()
@@ -51,5 +59,15 @@ private extension LivePricesContainer {
     func makeLivePricesRepository() -> LivePricesRepository {
         let networkService = makeLivePricesNetworkService()
         return LivePricesRepository(networkService: networkService)
+    }
+    
+    // Coin Details
+    func makeCoinDetailsNetworkService() -> CoinDetailsNetworkStrategy {
+        return CoinDetailsNetworkService()
+    }
+    
+    func makeCoinDetailsRepository() -> CoinDetailsRepository {
+        let networkService = makeCoinDetailsNetworkService()
+        return CoinDetailsRepository(networkService: networkService)
     }
 }

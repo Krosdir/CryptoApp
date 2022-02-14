@@ -45,31 +45,47 @@ extension LivePricesCoordinator {
         let livePricesViewController = UIHostingController(rootView: LivePricesView(viewModel: viewModel))
         subscribeToLivePricesViewControllerPublishers(livePricesViewController)
         
-        container.viewModel = viewModel
-        
         return livePricesViewController
     }
     
-    func makeEditPortfolioViewController() -> UIHostingController<EditPortfolioView> {
-        let viewModel = container.makeEditPortfolioViewModel()
+    func makeEditPortfolioViewController(with coins: [Coin]) -> UIHostingController<EditPortfolioView> {
+        let viewModel = container.makeEditPortfolioViewModel(with: coins)
         return UIHostingController(rootView: EditPortfolioView(viewModel: viewModel))
+    }
+    
+    func makeCoinDetailsViewController(for coin: Coin) -> UIHostingController<CoinDetailsView> {
+        let viewModel = container.makeCoinDetailsViewModel(for: coin)
+        return UIHostingController(rootView: CoinDetailsView(viewModel: viewModel))
     }
 }
 
 private extension LivePricesCoordinator {
     func subscribeToLivePricesViewControllerPublishers(_ viewController: UIHostingController<LivePricesView>) {
         let viewModel = viewController.rootView.viewModel
+        
         viewModel.showEditPortfolioScreenSignal
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.showEditPortfolioScreen()
+            .sink { [weak self] coins in
+                self?.showEditPortfolioScreen(with: coins)
+            }
+            .store(in: &viewModel.subscriptions)
+        
+        viewModel.showCoinDetailsScreenSignal
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] coin in
+                self?.showCoinDetailsScreen(for: coin)
             }
             .store(in: &viewModel.subscriptions)
     }
     
-    func showEditPortfolioScreen() {
-        let editPortfolioViewController = makeEditPortfolioViewController()
+    func showEditPortfolioScreen(with coins: [Coin]) {
+        let editPortfolioViewController = makeEditPortfolioViewController(with: coins)
         editPortfolioViewController.modalPresentationStyle = .pageSheet
         rootNavigationController.present(editPortfolioViewController, animated: true)
+    }
+    
+    func showCoinDetailsScreen(for coin: Coin) {
+        let coinDetailsViewController = makeCoinDetailsViewController(for: coin)
+        rootNavigationController.pushViewController(coinDetailsViewController, animated: true)
     }
 }

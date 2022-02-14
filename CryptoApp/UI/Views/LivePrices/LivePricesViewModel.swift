@@ -13,9 +13,14 @@ class LivePricesViewModel: ObservableObject {
     
     var subscriptions = Set<AnyCancellable>()
     
-    private let showEditPortfolioScreenPublisher = PassthroughSubject<Void, Never>()
-    var showEditPortfolioScreenSignal: AnyPublisher<Void, Never> {
+    private let showEditPortfolioScreenPublisher = PassthroughSubject<[Coin], Never>()
+    var showEditPortfolioScreenSignal: AnyPublisher<[Coin], Never> {
         showEditPortfolioScreenPublisher.eraseToAnyPublisher()
+    }
+    
+    private let showCoinDetailsScreenPublisher = PassthroughSubject<Coin, Never>()
+    var showCoinDetailsScreenSignal: AnyPublisher<Coin, Never> {
+        showCoinDetailsScreenPublisher.eraseToAnyPublisher()
     }
     
     @Published var allCoins: [Coin] = []
@@ -30,6 +35,10 @@ class LivePricesViewModel: ObservableObject {
     }
     
     func didTapEditPortfolio() {
-        showEditPortfolioScreenPublisher.send()
+        showEditPortfolioScreenPublisher.send(allCoins)
+    }
+    
+    func didTapCoinRow(with coin: Coin) {
+        showCoinDetailsScreenPublisher.send(coin)
     }
 }
