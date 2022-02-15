@@ -19,6 +19,8 @@ class DeveloperPreview {
     
     private init() {}
     
+    let stats = StatisticsInfo(title: "Market Cap", value: "$23.4Bn", percentageChange: 26.23)
+    
     let coin = Coin(
        id: "bitcoin",
        symbol: "btc",

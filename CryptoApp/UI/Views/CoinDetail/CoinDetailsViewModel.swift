@@ -11,6 +11,10 @@ import Foundation
 class CoinDetailsViewModel: ObservableObject {
     let repository: CoinDetailsRepository
     
+    @Published var overviewStatistics: [StatisticsInfo] = []
+    @Published var additionalStatistics: [StatisticsInfo] = []
+    @Published var isLoading = false
+    
     var subscriptions = Set<AnyCancellable>()
     
     let coin: Coin
@@ -23,8 +27,124 @@ class CoinDetailsViewModel: ObservableObject {
         self.coin = coin
         self.repository = repository
         
+        self.overviewStatistics = getOverviewStats()
+        
+        self.isLoading = true
         self.repository.getDetails(for: coin) { [weak self] coinDetails in
-            self?.coinDetails = coinDetails
+            guard let self = self else { return }
+            self.coinDetails = coinDetails
+            
+            self.additionalStatistics = self.getAdditionalStats()
+            self.isLoading = false
         }
+    }
+}
+
+// MARK: - Overview Stats
+private extension CoinDetailsViewModel {
+    func getOverviewStats() -> [StatisticsInfo] {
+        let priceStats = getPriceStats()
+        let marketCapStats = getMarketCapStats()
+        let rankStats = getRankStats()
+        let volumeStats = getVolumeStats()
+
+        return [
+            priceStats,
+            marketCapStats,
+            rankStats,
+            volumeStats
+        ]
+    }
+    
+    func getPriceStats() -> StatisticsInfo {
+        let price = coin.currentPrice.asCurrencyWith6Decimals()
+        let pricePercentChange = coin.priceChangePercentage24H
+        return StatisticsInfo(
+            title: "Current Price",
+            value: price,
+            percentageChange: pricePercentChange
+        )
+    }
+    
+    func getMarketCapStats() -> StatisticsInfo {
+        let marketCap = "$" + (coin.marketCap?.formattedWithAbbreviations() ?? "")
+        let marketCapChange = coin.marketCapChangePercentage24H
+        return StatisticsInfo(
+            title: "Market Capitalization",
+            value: marketCap,
+            percentageChange: marketCapChange
+        )
+    }
+    
+    func getRankStats() -> StatisticsInfo {
+        let rank = "\(coin.rank)"
+        return StatisticsInfo(title: "Rank", value: rank)
+    }
+    
+    func getVolumeStats() -> StatisticsInfo {
+        let volume = "$" + (coin.totalVolume?.formattedWithAbbreviations() ?? "")
+        return StatisticsInfo(title: "Volume", value: volume)
+    }
+}
+
+// MARK: - Additional Stats
+private extension CoinDetailsViewModel {
+    func getAdditionalStats() -> [StatisticsInfo] {
+        let highStats = getHighStats()
+        let lowStats = getLowStats()
+        let priceChangeStats = getPriceChangeStats()
+        let marketCapChangeStats = getMarketCapChangeStats()
+        let blockStats = getBlockStats()
+        let hashingStats = getHashingStats()
+
+        return [
+            highStats,
+            lowStats,
+            priceChangeStats,
+            marketCapChangeStats,
+            blockStats,
+            hashingStats
+        ]
+    }
+    
+    func getHighStats() -> StatisticsInfo {
+        let high = coin.high24H?.asCurrencyWith6Decimals() ?? "n/a"
+        return StatisticsInfo(title: "24h High", value: high)
+    }
+    
+    func getLowStats() -> StatisticsInfo {
+        let low = coin.low24H?.asCurrencyWith6Decimals() ?? "n/a"
+        return StatisticsInfo(title: "24h Low", value: low)
+    }
+    
+    func getPriceChangeStats() -> StatisticsInfo {
+        let priceChange = coin.priceChange24H?.asCurrencyWith6Decimals() ?? "n/a"
+        let pricePercentChange = coin.priceChangePercentage24H
+        return StatisticsInfo(
+            title: "24h Price Change",
+            value: priceChange,
+            percentageChange: pricePercentChange
+        )
+    }
+    
+    func getMarketCapChangeStats() -> StatisticsInfo {
+        let marketCapChange = "$" + (coin.marketCapChange24H?.formattedWithAbbreviations() ?? "")
+        let marketCapPercentChange = coin.marketCapChangePercentage24H
+        return StatisticsInfo(
+            title: "24h Market Cap Change",
+            value: marketCapChange,
+            percentageChange: marketCapPercentChange
+        )
+    }
+    
+    func getBlockStats() -> StatisticsInfo {
+        let blockTime = coinDetails.blockTimeInMinutes ?? 0
+        let blockTimeString = blockTime == 0 ? "n/a" : "\(blockTime)"
+        return StatisticsInfo(title: "Block Time", value: blockTimeString)
+    }
+    
+    func getHashingStats() -> StatisticsInfo {
+        let hashing = coinDetails.hashingAlgorithm ?? "n/a"
+        return StatisticsInfo(title: "Hashing Algorithm", value: hashing)
     }
 }
