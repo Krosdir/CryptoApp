@@ -80,6 +80,7 @@ private extension LivePricesView {
                     CoinRowView(coin: coin, showHoldingsCulums: false)
                         .padding(.horizontal, -10)
                 }
+                .listRowBackground(Color.theme.background)
             }
         }
         .listStyle(.plain)
