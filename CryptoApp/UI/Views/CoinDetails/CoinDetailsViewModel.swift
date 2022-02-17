@@ -13,6 +13,9 @@ class CoinDetailsViewModel: ObservableObject {
     
     @Published var overviewStatistics: [StatisticsInfo] = []
     @Published var additionalStatistics: [StatisticsInfo] = []
+    @Published var description: String?
+    @Published var websiteLink: String?
+    @Published var redditLink: String?
     @Published var isLoading = false
     
     var subscriptions = Set<AnyCancellable>()
@@ -33,6 +36,9 @@ class CoinDetailsViewModel: ObservableObject {
         self.repository.getDetails(for: coin) { [weak self] coinDetails in
             guard let self = self else { return }
             self.coinDetails = coinDetails
+            self.description = coinDetails.description?.en?.removingHTMLOccurances
+            self.websiteLink = coinDetails.links?.homepage?.first
+            self.redditLink = coinDetails.links?.subredditURL
             
             self.additionalStatistics = self.getAdditionalStats()
             self.isLoading = false

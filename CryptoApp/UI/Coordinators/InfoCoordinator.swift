@@ -10,13 +10,14 @@ import UIKit
 
 public class InfoCoordinator: Coordinator {
     
+    weak var container: LivePricesContainer!
+    
     public override init(
         root: UINavigationController,
         parent: Coordinator?
     ) {
         super.init(root: root, parent: parent)
         
-        rootNavigationController.isNavigationBarHidden = true
         rootNavigationController.tabBarItem = UITabBarItem(
             title: "Info".uppercased(),
             image: UIImage(systemName: "info.circle"),

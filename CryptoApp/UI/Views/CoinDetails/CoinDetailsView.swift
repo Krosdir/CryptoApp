@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct CoinDetailsView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: CoinDetailsViewModel
+    @State var isDescriptionExpanded = false
     private let columns: [GridItem] = [
         GridItem(.flexible()),
         GridItem(.flexible())
@@ -23,31 +25,24 @@ struct CoinDetailsView: View {
             Color.theme.background
                 .ignoresSafeArea()
             
-            ScrollView {
-                VStack(spacing: 20) {
-                    ChartView(coin: viewModel.coin)
-                    
-                    overviewTitle
-                    Divider()
-                    overviewGrid
-                    
-                    additionalTitle
-                    Divider()
-                    additionalGrid
-                }
-                .padding()
-            }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text(viewModel.coin.name)
-                        .font(.headline)
-                        .foregroundColor(.theme.accent)
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    navigationBarTrailingItems
+            VStack {
+                detailsHeader
+                ScrollView {
+                    VStack(spacing: 20) {
+                        ChartView(coin: viewModel.coin)
+                        overviewTitle
+                        Divider()
+                        descriptionSection
+                        overviewGrid
+                        additionalTitle
+                        Divider()
+                        additionalGrid
+                        linksSection
+                    }
+                    .padding()
                 }
             }
+            .navigationBarHidden(true)
         }
     }
 }
@@ -62,6 +57,24 @@ struct CoinDetailView_Previews: PreviewProvider {
 }
 
 private extension CoinDetailsView {
+    var detailsHeader: some View {
+        HStack {
+            CircleButtonView(iconName: "chevron.right")
+                .rotationEffect(Angle(degrees: 180))
+                .onTapGesture { didTapBackButton() }
+            Spacer()
+            Text(viewModel.coin.name)
+                .font(.headline)
+                .fontWeight(.heavy)
+                .foregroundColor(.theme.accent)
+            Spacer()
+            navigationBarTrailingItems
+                .padding(.trailing, 16)
+        }
+        .padding(.top)
+        .padding(.horizontal)
+    }
+    
     var navigationBarTrailingItems: some View {
         HStack {
             Text(viewModel.coin.symbol.uppercased())
@@ -69,6 +82,35 @@ private extension CoinDetailsView {
                 .foregroundColor(.theme.secondaryText)
             CoinImageView(coin: viewModel.coin)
                 .frame(width: 25, height: 25)
+        }
+    }
+    
+    var descriptionSection: some View {
+        Group {
+            if viewModel.isLoading {
+                ProgressView()
+                    .frame(height: 95)
+            } else {
+                ZStack {
+                    if let description = viewModel.description,
+                       !description.isEmpty {
+                        VStack(alignment: .leading) {
+                            Text(description)
+                                .lineLimit(isDescriptionExpanded ? nil : 3)
+                                .font(.callout)
+                                .foregroundColor(.theme.secondaryText)
+                            
+                            Button(action: didTapExpandButton) {
+                                Text(isDescriptionExpanded ? "Read less" : "Read more...")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .padding(.vertical, 4)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
+            }
         }
     }
     
@@ -115,6 +157,32 @@ private extension CoinDetailsView {
                         }
                     }
             }
+        }
+    }
+    
+    var linksSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            if let websiteLink = viewModel.websiteLink,
+               let url = URL(string: websiteLink) {
+                Link("Website", destination: url)
+            }
+            
+            if let redditLink = viewModel.redditLink,
+               let url = URL(string: redditLink) {
+                Link("Reddit", destination: url)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .font(.headline)
+    }
+    
+    func didTapBackButton() {
+        presentationMode.wrappedValue.dismiss()
+    }
+    
+    func didTapExpandButton() {
+        withAnimation(.easeInOut) {
+            isDescriptionExpanded.toggle()
         }
     }
 }

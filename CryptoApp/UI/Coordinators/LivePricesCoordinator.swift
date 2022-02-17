@@ -21,7 +21,6 @@ public class LivePricesCoordinator: Coordinator {
     ) {
         super.init(root: root, parent: parent)
         
-        rootNavigationController.isNavigationBarHidden = true
         rootNavigationController.tabBarItem = UITabBarItem(
             title: "Live Prices".uppercased(),
             image: UIImage(systemName: "dollarsign.circle"),

@@ -22,7 +22,7 @@
 		831515F927B7993600D0A10D /* LivePricesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831515F827B7993600D0A10D /* LivePricesViewModel.swift */; };
 		831515FB27B7994600D0A10D /* LivePricesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831515FA27B7994600D0A10D /* LivePricesRepository.swift */; };
 		831515FD27B79A9400D0A10D /* LivePricesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831515FC27B79A9400D0A10D /* LivePricesCoordinator.swift */; };
-		831515FF27B79D3A00D0A10D /* SettingsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831515FE27B79D3A00D0A10D /* SettingsCoordinator.swift */; };
+		831515FF27B79D3A00D0A10D /* InfoCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831515FE27B79D3A00D0A10D /* InfoCoordinator.swift */; };
 		8315160227B79E0600D0A10D /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315160127B79E0600D0A10D /* InfoView.swift */; };
 		833F491427BAA57E00032A70 /* CoinDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833F491327BAA57E00032A70 /* CoinDetailsView.swift */; };
 		833F491627BAA5DB00032A70 /* CoinDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833F491527BAA5DB00032A70 /* CoinDetails.swift */; };
@@ -51,6 +51,7 @@
 		8388BC7E27BD3C1E00EE58A9 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388BC7D27BD3C1E00EE58A9 /* ChartView.swift */; };
 		8388BC8027BD424C00EE58A9 /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388BC7F27BD424C00EE58A9 /* Date.swift */; };
 		8388BC8327BD47AF00EE58A9 /* ChartViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8388BC8227BD47AF00EE58A9 /* ChartViewModel.swift */; };
+		83D5F11627BE8F3900749BD7 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D5F11527BE8F3900749BD7 /* String.swift */; };
 		83F77FA427B92AA800E73466 /* EditPortfolioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F77FA327B92AA800E73466 /* EditPortfolioView.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,7 +73,7 @@
 		831515F827B7993600D0A10D /* LivePricesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePricesViewModel.swift; sourceTree = "<group>"; };
 		831515FA27B7994600D0A10D /* LivePricesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePricesRepository.swift; sourceTree = "<group>"; };
 		831515FC27B79A9400D0A10D /* LivePricesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivePricesCoordinator.swift; sourceTree = "<group>"; };
-		831515FE27B79D3A00D0A10D /* SettingsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinator.swift; sourceTree = "<group>"; };
+		831515FE27B79D3A00D0A10D /* InfoCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoCoordinator.swift; sourceTree = "<group>"; };
 		8315160127B79E0600D0A10D /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		833F491327BAA57E00032A70 /* CoinDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsView.swift; sourceTree = "<group>"; };
 		833F491527BAA5DB00032A70 /* CoinDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetails.swift; sourceTree = "<group>"; };
@@ -101,6 +102,7 @@
 		8388BC7D27BD3C1E00EE58A9 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
 		8388BC7F27BD424C00EE58A9 /* Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		8388BC8227BD47AF00EE58A9 /* ChartViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartViewModel.swift; sourceTree = "<group>"; };
+		83D5F11527BE8F3900749BD7 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		83F77FA327B92AA800E73466 /* EditPortfolioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPortfolioView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -192,7 +194,7 @@
 				831515E527B7966A00D0A10D /* Coordinator.swift */,
 				831515E727B7969000D0A10D /* AppCoordinator.swift */,
 				831515FC27B79A9400D0A10D /* LivePricesCoordinator.swift */,
-				831515FE27B79D3A00D0A10D /* SettingsCoordinator.swift */,
+				831515FE27B79D3A00D0A10D /* InfoCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -254,6 +256,7 @@
 				8388BC7F27BD424C00EE58A9 /* Date.swift */,
 				836CFC0627B7C2E8006E6843 /* Double.swift */,
 				836CFC1227B7DC34006E6843 /* PreviewProvider.swift */,
+				83D5F11527BE8F3900749BD7 /* String.swift */,
 				83744E2027B93B12008AB631 /* UIApplication.swift */,
 				836CFC1027B7CF40006E6843 /* URL.swift */,
 			);
@@ -385,6 +388,7 @@
 			files = (
 				836CFC1327B7DC34006E6843 /* PreviewProvider.swift in Sources */,
 				8315160227B79E0600D0A10D /* InfoView.swift in Sources */,
+				83D5F11627BE8F3900749BD7 /* String.swift in Sources */,
 				836CFC0A27B7C453006E6843 /* CoinRowView.swift in Sources */,
 				831515E627B7966A00D0A10D /* Coordinator.swift in Sources */,
 				8376B25C27BBEFD8000D8501 /* StatisticsInfoView.swift in Sources */,
@@ -411,7 +415,7 @@
 				831515F127B7981500D0A10D /* LivePricesFakeNetworkService.swift in Sources */,
 				836CFC0F27B7C956006E6843 /* NetworkService.swift in Sources */,
 				8388BC8327BD47AF00EE58A9 /* ChartViewModel.swift in Sources */,
-				831515FF27B79D3A00D0A10D /* SettingsCoordinator.swift in Sources */,
+				831515FF27B79D3A00D0A10D /* InfoCoordinator.swift in Sources */,
 				831515EC27B7976800D0A10D /* LivePricesNetworkStrategy.swift in Sources */,
 				836CFC1927B7DCDA006E6843 /* CircleButtonView.swift in Sources */,
 				83744E2127B93B12008AB631 /* UIApplication.swift in Sources */,

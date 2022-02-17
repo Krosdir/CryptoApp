@@ -32,10 +32,10 @@ struct LivePricesView: View {
                         .transition(.move(edge: .trailing))
                 }
                 
-                
                 Spacer()
             }
         }
+        .navigationBarHidden(true)
     }
 }
 
@@ -48,13 +48,9 @@ struct LivePricesView_Previews: PreviewProvider {
 private extension LivePricesView {
     var homeHeader: some View {
         HStack {
-            if showPortfolio {
-                CircleButtonView(iconName: "plus")
-                    .onTapGesture(perform: didTapEditPortfolio)
-            } else {
-                Spacer()
-                Spacer()
-            }
+            CircleButtonView(iconName: "plus")
+                .onTapGesture(perform: didTapEditPortfolio)
+                .opacity(showPortfolio ? 1 : 0)
             Spacer()
             Text(showPortfolio ? "Portfolio" : "Live Prices")
                 .font(.headline)
@@ -63,13 +59,14 @@ private extension LivePricesView {
                 .animation(.none)
             Spacer()
             CircleButtonView(iconName: "chevron.right")
-                .rotationEffect(Angle(degrees: showPortfolio ? 180 : 0 ))
+                .rotationEffect(Angle(degrees: showPortfolio ? 180 : 0))
                 .onTapGesture {
                     withAnimation(.spring()) {
                         showPortfolio.toggle()
                     }
                 }
         }
+        .padding(.top)
         .padding(.horizontal)
     }
     
