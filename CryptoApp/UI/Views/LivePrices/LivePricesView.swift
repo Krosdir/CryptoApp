@@ -48,8 +48,10 @@ struct LivePricesView_Previews: PreviewProvider {
 private extension LivePricesView {
     var homeHeader: some View {
         HStack {
-            CircleButtonView(iconName: "plus")
-                .onTapGesture(perform: didTapEditPortfolio)
+            CircleButtonView(
+                iconName: "plus",
+                isRotated: .constant(false),
+                action: didTapEditPortfolio)
                 .opacity(showPortfolio ? 1 : 0)
             Spacer()
             Text(showPortfolio ? "Portfolio" : "Live Prices")
@@ -58,13 +60,10 @@ private extension LivePricesView {
                 .foregroundColor(.theme.accent)
                 .animation(.none)
             Spacer()
-            CircleButtonView(iconName: "chevron.right")
-                .rotationEffect(Angle(degrees: showPortfolio ? 180 : 0))
-                .onTapGesture {
-                    withAnimation(.spring()) {
-                        showPortfolio.toggle()
-                    }
-                }
+            CircleButtonView(
+                iconName: "chevron.right",
+                isRotated: $showPortfolio,
+                action: didTapShowPortfolio)
         }
         .padding(.top)
         .padding(.horizontal)
@@ -106,6 +105,12 @@ private extension LivePricesView {
         .font(.caption)
         .foregroundColor(.theme.secondaryText)
         .padding(.horizontal)
+    }
+    
+    func didTapShowPortfolio() {
+        withAnimation(.spring()) {
+            showPortfolio.toggle()
+        }
     }
     
     func didTapEditPortfolio() {

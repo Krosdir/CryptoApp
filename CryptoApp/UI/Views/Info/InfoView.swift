@@ -18,9 +18,14 @@ struct InfoView: View {
             VStack {
                 infoHeader
                 List {
-                    generalSection
-                    coinGeckoSection
+                    Group {
+                        generalSection
+                        coinGeckoSection
+                    }
+                    .listRowBackground(Color.theme.background)
                 }
+                
+                .listStyle(.plain)
             }
         }
         .navigationBarHidden(true)
@@ -59,6 +64,7 @@ private extension InfoView {
             .padding(.vertical)
             Link(destination: appGithubURL) {
                 Text("App Github")
+                    .foregroundColor(.blue)
                     .fontWeight(.bold)
             }
         } header: { Text("Krosdir") }
@@ -81,6 +87,7 @@ private extension InfoView {
             .padding(.vertical)
             Link(destination: coingeckoURL) {
                 Text("Visit CoinGecko")
+                    .foregroundColor(.blue)
                     .fontWeight(.bold)
             }
         } header: { Text("CoinGecko") }

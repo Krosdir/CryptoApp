@@ -59,9 +59,11 @@ struct CoinDetailView_Previews: PreviewProvider {
 private extension CoinDetailsView {
     var detailsHeader: some View {
         HStack {
-            CircleButtonView(iconName: "chevron.right")
-                .rotationEffect(Angle(degrees: 180))
-                .onTapGesture { didTapBackButton() }
+            CircleButtonView(
+                iconName: "chevron.right",
+                isRotated: .constant(true),
+                action: didTapBackButton
+            )
             Spacer()
             Text(viewModel.coin.name)
                 .font(.headline)

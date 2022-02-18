@@ -16,23 +16,28 @@ struct EditPortfolioView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    SearchBarView(searchText: $viewModel.searchText)
-                    coinLogoList
-                    
-                    if selectedCoin != nil {
-                        portfolioInputSection
+            ZStack {
+                Color.theme.background
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        SearchBarView(searchText: $viewModel.searchText)
+                        coinLogoList
+                        
+                        if selectedCoin != nil {
+                            portfolioInputSection
+                        }
                     }
                 }
-            }
-            .navigationTitle("Edit Portfolio")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    closeButton
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    trailingNavBarButtons
+                .navigationTitle("Edit Portfolio")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        closeButton
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        trailingNavBarButtons
+                    }
                 }
             }
         }
@@ -50,7 +55,7 @@ private extension EditPortfolioView {
         Button(action: didTapClose) {
             Image(systemName: "xmark")
                 .font(.headline)
-                .foregroundColor(.black)
+                .foregroundColor(.theme.accent)
         }
     }
     
@@ -65,7 +70,7 @@ private extension EditPortfolioView {
                         .background(
                             RoundedRectangle(cornerRadius: 10)
                                 .stroke(selectedCoin?.id == coin.id ?
-                                        Color.theme.green : Color.clear, lineWidth: 1)
+                                        Color.theme.accent : Color.clear, lineWidth: 1)
                         )
                 }
             }
@@ -104,12 +109,13 @@ private extension EditPortfolioView {
     var trailingNavBarButtons: some View {
         HStack(spacing: 10) {
             Image(systemName: "checkmark")
+                .foregroundColor(.theme.accent)
                 .opacity(showCheckmark ? 1 : 0)
             
             Button(action: didTapSaveButton) {
                 Text("Save".uppercased())
             }
-            .foregroundColor(.black)
+            .foregroundColor(.theme.accent)
             .opacity(selectedCoin != nil && selectedCoin?.currentHoldings != Double(quantityText) ? 1 : 0
             )
         }
