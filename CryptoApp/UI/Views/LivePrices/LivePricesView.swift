@@ -9,7 +9,6 @@ import SwiftUI
 
 struct LivePricesView: View {
     @ObservedObject var viewModel: LivePricesViewModel
-    @State private var showPortfolio = false
     
     init(viewModel: LivePricesViewModel) {
         _viewModel = ObservedObject(wrappedValue: viewModel)
@@ -23,12 +22,13 @@ struct LivePricesView: View {
             
             VStack {
                 homeHeader
+                SearchBarView(searchText: $viewModel.searchText)
                 columnTitles
-                if !showPortfolio {
+                if !viewModel.isPortfolioShown {
                     allCoinsList
                         .transition(.move(edge: .leading))
                 }
-                if showPortfolio {
+                if viewModel.isPortfolioShown {
                     portfolioCoinsList
                         .transition(.move(edge: .trailing))
                 }
@@ -53,9 +53,9 @@ private extension LivePricesView {
                 iconName: "plus",
                 isRotated: .constant(false),
                 action: didTapEditPortfolio)
-                .opacity(showPortfolio ? 1 : 0)
+                .opacity(viewModel.isPortfolioShown ? 1 : 0)
             Spacer()
-            Text(showPortfolio ? "Portfolio" : "Live Prices")
+            Text(viewModel.isPortfolioShown ? "Portfolio" : "Live Prices")
                 .font(.headline)
                 .fontWeight(.heavy)
                 .foregroundColor(.theme.accent)
@@ -63,7 +63,7 @@ private extension LivePricesView {
             Spacer()
             CircleButtonView(
                 iconName: "chevron.right",
-                isRotated: $showPortfolio,
+                isRotated: $viewModel.isPortfolioShown,
                 action: didTapShowPortfolio)
         }
         .padding(.top)
@@ -72,7 +72,7 @@ private extension LivePricesView {
     
     var allCoinsList: some View {
         List {
-            ForEach(viewModel.allCoins) { coin in
+            ForEach(viewModel.filteredCoins) { coin in
                 Button { didTapCoinRow(with: coin) } label: {
                     CoinRowView(coin: coin, showHoldingsCulums: false)
                         .padding(.horizontal, -10)
@@ -95,13 +95,36 @@ private extension LivePricesView {
     
     var columnTitles: some View {
         HStack {
-            Text("Coin")
-            Spacer()
-            if showPortfolio {
-                Text("Holdings")
+            HStack(spacing: 4) {
+                Text("Coin")
+                Image(systemName: "chevron.down")
+                    .sortStyle(for: .rank, and: viewModel.sortOption)
             }
-            Text("Price")
-                .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+            .onTapGesture { didTapSort(with: .rank) }
+            Spacer()
+            if viewModel.isPortfolioShown {
+                HStack {
+                    Text("Holdings")
+                    Image(systemName: "chevron.down")
+                        .sortStyle(for: .holdings, and: viewModel.sortOption)
+                }
+                .onTapGesture { didTapSort(with: .holdings) }
+            }
+            HStack(spacing: 4) {
+                Text("Price")
+                Image(systemName: "chevron.down")
+                    .sortStyle(for: .price, and: viewModel.sortOption)
+            }
+            .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+            .onTapGesture { didTapSort(with: .price) }
+            Button(action: didTapReload) {
+                Image(systemName: "goforward")
+            }
+            .rotationEffect(
+                Angle(degrees: viewModel.isLoading ? 360 : 0),
+                anchor: .center
+            )
+            .padding(8)
         }
         .font(.caption)
         .foregroundColor(.theme.secondaryText)
@@ -110,7 +133,7 @@ private extension LivePricesView {
     
     func didTapShowPortfolio() {
         withAnimation(.spring()) {
-            showPortfolio.toggle()
+            viewModel.isPortfolioShown.toggle()
         }
     }
     
@@ -120,5 +143,15 @@ private extension LivePricesView {
     
     func didTapCoinRow(with coin: Coin) {
         viewModel.didTapCoinRow(with: coin)
+    }
+    
+    func didTapReload() {
+        withAnimation(.linear(duration: 2)) {
+            viewModel.getCoins()
+        }
+    }
+    
+    func didTapSort(with sort: LivePricesViewModel.SortOptions) {
+        viewModel.didTapSort(with: sort)
     }
 }

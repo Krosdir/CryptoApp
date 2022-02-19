@@ -8,14 +8,13 @@
 import Foundation
 
 class CoinDetailsRepository {
-    let networkService: CoinDetailsNetworkStrategy
-    
-    // CRUD Methods
+    private let networkService: CoinDetailsNetworkStrategy
     
     init(networkService: CoinDetailsNetworkStrategy) {
         self.networkService = networkService
     }
     
+    // CRUD Methods
     func getDetails(
         for coin: Coin,
         completion: @escaping (CoinDetails) -> Void

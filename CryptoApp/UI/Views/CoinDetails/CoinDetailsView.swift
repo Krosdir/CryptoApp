@@ -64,8 +64,6 @@ struct CoinDetailsView: View {
                     }
                     .padding(32)
                 }
-//                .upLeftShadow()
-                
             }
             .navigationBarHidden(true)
         }

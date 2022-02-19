@@ -39,4 +39,20 @@ extension View {
             .shadow(color: .theme.lightShadow.opacity(0.25),
                     radius: radius, x: offset, y: offset)
     }
+    
+    func sortStyle(
+        for sort: LivePricesViewModel.SortOptions,
+        and viewModelSort: LivePricesViewModel.SortOptions
+    ) -> some View {
+        var reversedSort: LivePricesViewModel.SortOptions = .rankReversed
+        switch sort {
+        case .rank: reversedSort = .rankReversed
+        case .holdings: reversedSort = .holdingsReversed
+        case .price: reversedSort = .priceReversed
+        default: break
+        }
+        return self
+            .opacity((viewModelSort == sort || viewModelSort == reversedSort) ? 1 : 0)
+            .rotationEffect(Angle(degrees: viewModelSort == sort ? 0 : 180))
+    }
 }
