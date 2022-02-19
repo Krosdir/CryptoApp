@@ -47,5 +47,12 @@ public class AppContainer {
         
         appCoordinator = makeAppCoordinator()
         makeChildrenCoordinators()
+        appCoordinator.container = self
+    }
+}
+
+extension AppContainer {
+    func makeLaunchViewModel() -> LaunchViewModel {
+        return LaunchViewModel()
     }
 }

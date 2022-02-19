@@ -5,10 +5,12 @@
 //  Created by Danil on 12.02.2022.
 //
 
+import SwiftUI
 import UIKit
 
 public class AppCoordinator: Coordinator {
     
+    var container: AppContainer!
     let tabBarController = UITabBarController()
     
     public override init(
@@ -20,9 +22,13 @@ public class AppCoordinator: Coordinator {
         rootNavigationController.navigationBar.isHidden = true
         
         rootNavigationController.pushViewController(tabBarController, animated: false)
+        
     }
     
     override func start() {
+        let launchViewController = makeLaunchViewController()
+        rootNavigationController.pushViewController(launchViewController, animated: false)
+        
         children.forEach({ $0.start() })
         
         tabBarController.setViewControllers(
@@ -38,5 +44,16 @@ public class AppCoordinator: Coordinator {
     
     override func childDidFinish(_ child: Coordinator) {
         super.childDidFinish(child)
+    }
+}
+
+extension AppCoordinator {
+    func makeLaunchViewController() -> UIHostingController<LaunchView> {
+        let viewModel = container.makeLaunchViewModel()
+        return UIHostingController(rootView: LaunchView(viewModel: viewModel))
+    }
+    
+    func popViewController() {
+        rootNavigationController.popViewController(animated: true)
     }
 }
