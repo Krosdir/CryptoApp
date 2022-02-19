@@ -13,6 +13,7 @@ struct LivePricesView: View {
     
     init(viewModel: LivePricesViewModel) {
         _viewModel = ObservedObject(wrappedValue: viewModel)
+        viewModel.getCoins()
     }
     
     var body: some View {

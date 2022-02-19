@@ -23,14 +23,24 @@ class LivePricesViewModel: ObservableObject {
         showCoinDetailsScreenPublisher.eraseToAnyPublisher()
     }
     
+    private let hideLaunchScreenPublisher =  PassthroughSubject<Void, Never>()
+    var hideLaunchScreenSignal: AnyPublisher<Void, Never> {
+        hideLaunchScreenPublisher.eraseToAnyPublisher()
+    }
+    
     @Published var allCoins: [Coin] = []
     @Published var portfolioCoins: [Coin] = []
     
     init(repository: LivePricesRepository) {
         self.repository = repository
-        
+    }
+    
+    func getCoins() {
         self.repository.getCoins { [weak self] coins in
-            self?.allCoins = coins
+            guard let self = self else { return }
+            self.allCoins = coins
+            
+            self.hideLaunchScreenPublisher.send()
         }
     }
     

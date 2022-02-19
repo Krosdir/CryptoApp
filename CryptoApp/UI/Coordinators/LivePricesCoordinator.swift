@@ -41,8 +41,9 @@ public class LivePricesCoordinator: Coordinator {
 extension LivePricesCoordinator {
     func makeLivePricesViewController() -> UIHostingController<LivePricesView> {
         let viewModel = container.makeLivePricesViewModel()
+        subscribeToLivePricesViewModelPublishers(viewModel)
         let livePricesViewController = UIHostingController(rootView: LivePricesView(viewModel: viewModel))
-        subscribeToLivePricesViewControllerPublishers(livePricesViewController)
+        
         
         return livePricesViewController
     }
@@ -59,9 +60,7 @@ extension LivePricesCoordinator {
 }
 
 private extension LivePricesCoordinator {
-    func subscribeToLivePricesViewControllerPublishers(_ viewController: UIHostingController<LivePricesView>) {
-        let viewModel = viewController.rootView.viewModel
-        
+    func subscribeToLivePricesViewModelPublishers(_ viewModel: LivePricesViewModel) {
         viewModel.showEditPortfolioScreenSignal
             .receive(on: DispatchQueue.main)
             .sink { [weak self] coins in
@@ -73,6 +72,13 @@ private extension LivePricesCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] coin in
                 self?.showCoinDetailsScreen(for: coin)
+            }
+            .store(in: &viewModel.subscriptions)
+        
+        viewModel.hideLaunchScreenSignal
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.parent?.pop(animated: true)
             }
             .store(in: &viewModel.subscriptions)
     }

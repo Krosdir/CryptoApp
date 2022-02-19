@@ -25,7 +25,9 @@ public class LivePricesContainer {
         self.coordinator = makeLivePricesCoordinator()
         coordinator.container = self
     }
-    
+}
+
+extension LivePricesContainer {
     func makeLivePricesViewModel() -> LivePricesViewModel {
         let repository = makeLivePricesRepository()
         return LivePricesViewModel(repository: repository)

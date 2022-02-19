@@ -28,19 +28,44 @@ struct CoinDetailsView: View {
             VStack {
                 detailsHeader
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 50) {
                         ChartView(coin: viewModel.coin)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                            .foregroundColor(.theme.background)
+                                    .padding(-16)
+                                    .upLeftShadow(radius: 8)
+                            )
+                        VStack {
                         overviewTitle
                         Divider()
                         descriptionSection
                         overviewGrid
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                        .foregroundColor(.theme.background)
+                                .padding(-16)
+                                .upLeftShadow(radius: 8)
+                        )
+                        
+                        VStack {
                         additionalTitle
                         Divider()
                         additionalGrid
                         linksSection
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                        .foregroundColor(.theme.background)
+                                .padding(-16)
+                                .upLeftShadow(radius: 8)
+                        )
                     }
-                    .padding()
+                    .padding(32)
                 }
+//                .upLeftShadow()
+                
             }
             .navigationBarHidden(true)
         }
@@ -53,6 +78,7 @@ struct CoinDetailView_Previews: PreviewProvider {
             CoinDetailsView(viewModel: CoinDetailsViewModel(coin: dev.coin,
                                                             repository: CoinDetailsRepository(networkService: CoinDetailsNetworkService())))
         }
+        .preferredColorScheme(.dark)
     }
 }
 

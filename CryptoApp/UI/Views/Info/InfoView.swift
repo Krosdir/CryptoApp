@@ -24,7 +24,7 @@ struct InfoView: View {
                     }
                     .listRowBackground(Color.theme.background)
                 }
-                
+                .upLeftShadow()
                 .listStyle(.plain)
             }
         }
@@ -35,6 +35,7 @@ struct InfoView: View {
 struct InfoView_Previews: PreviewProvider {
     static var previews: some View {
         InfoView()
+            .preferredColorScheme(.dark)
     }
 }
 
@@ -68,7 +69,6 @@ private extension InfoView {
                     .fontWeight(.bold)
             }
         } header: { Text("Krosdir") }
-        
     }
     
     var coinGeckoSection: some View {

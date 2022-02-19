@@ -77,6 +77,7 @@ private extension EditPortfolioView {
             .frame(height: 120)
             .padding(.horizontal)
         }
+        .upLeftShadow()
     }
     
     var portfolioInputSection: some View {

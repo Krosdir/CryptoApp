@@ -50,4 +50,8 @@ public class Coordinator: NSObject {
             rootNavigationController.present(coordinator.rootNavigationController, animated: animated)
         }
     }
+    
+    func pop(animated: Bool) {
+        rootNavigationController.popViewController(animated: animated)
+    }
 }
