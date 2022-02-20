@@ -39,6 +39,13 @@ struct EditPortfolioView: View {
                         trailingNavBarButtons
                     }
                 }
+                .onChange(of: viewModel.searchText) { value in
+                    if value.isEmpty {
+                        withAnimation(.easeIn) {
+                            removeSelectedCoin()
+                        }
+                    }
+                }
             }
         }
     }

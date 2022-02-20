@@ -32,35 +32,12 @@ struct CoinDetailsView: View {
                         ChartView(coin: viewModel.coin)
                             .background(
                                 RoundedRectangle(cornerRadius: 10)
-                                            .foregroundColor(.theme.background)
+                                    .foregroundColor(.theme.background)
                                     .padding(-16)
                                     .upLeftShadow(radius: 8)
                             )
-                        VStack {
-                        overviewTitle
-                        Divider()
-                        descriptionSection
-                        overviewGrid
-                        }
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                        .foregroundColor(.theme.background)
-                                .padding(-16)
-                                .upLeftShadow(radius: 8)
-                        )
-                        
-                        VStack {
-                        additionalTitle
-                        Divider()
-                        additionalGrid
-                        linksSection
-                        }
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                        .foregroundColor(.theme.background)
-                                .padding(-16)
-                                .upLeftShadow(radius: 8)
-                        )
+                        overviewCard
+                        additionalCard
                     }
                     .padding(32)
                 }
@@ -81,6 +58,36 @@ struct CoinDetailView_Previews: PreviewProvider {
 }
 
 private extension CoinDetailsView {
+    var overviewCard: some View {
+        VStack {
+            overviewTitle
+            Divider()
+            descriptionSection
+            overviewGrid
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.theme.background)
+                .padding(-16)
+                .upLeftShadow(radius: 8)
+        )
+    }
+    
+    var additionalCard: some View {
+        VStack {
+            additionalTitle
+            Divider()
+            additionalGrid
+            linksSection
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .foregroundColor(.theme.background)
+                .padding(-16)
+                .upLeftShadow(radius: 8)
+        )
+    }
+    
     var detailsHeader: some View {
         HStack {
             CircleButtonView(

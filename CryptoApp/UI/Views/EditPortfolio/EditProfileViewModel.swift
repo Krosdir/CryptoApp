@@ -13,6 +13,7 @@ class EditProfileViewModel: ObservableObject {
     var subscriptions = Set<AnyCancellable>()
     
     @Published var searchText = ""
+    
     @Published var allCoins: [Coin] = []
     @Published var filteredCoins: [Coin] = []
     

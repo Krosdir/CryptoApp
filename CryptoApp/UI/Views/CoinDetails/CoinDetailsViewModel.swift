@@ -9,19 +9,20 @@ import Combine
 import Foundation
 
 class CoinDetailsViewModel: ObservableObject {
-    let repository: CoinDetailsRepository
+    private let repository: CoinDetailsRepository
     
     @Published var overviewStatistics: [StatisticsInfo] = []
     @Published var additionalStatistics: [StatisticsInfo] = []
+    
     @Published var description: String?
     @Published var websiteLink: String?
     @Published var redditLink: String?
     @Published var isLoading = false
+    @Published var coinDetails: CoinDetails!
     
     var subscriptions = Set<AnyCancellable>()
     
     let coin: Coin
-    @Published var coinDetails: CoinDetails!
     
     init(
         coin: Coin,
