@@ -20,9 +20,9 @@ class LivePricesViewModel: ObservableObject {
     
     private let repository: LivePricesRepository
     
+    private var allConstCoins: [Coin] = []
     @Published var allCoins: [Coin] = []
     @Published var portfolioCoins: [Coin] = []
-    @Published var filteredCoins: [Coin] = []
     
     @Published var searchText = ""
     @Published var isLoading = false
@@ -56,6 +56,10 @@ class LivePricesViewModel: ObservableObject {
         repository.getCoins()
     }
     
+    func getPortfolioCoins() {
+        repository.getPortfolioCoins()
+    }
+    
     func didTapEditPortfolio() {
         showEditPortfolioScreenPublisher.send(allCoins)
     }
@@ -82,10 +86,10 @@ private extension LivePricesViewModel {
     func addSubscribers() {
         $searchText
             .combineLatest($allCoins, $sortOption)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map (filterAndSortCoins)
             .sink { [weak self] coins in
-                
-                self?.filteredCoins = coins
+                self?.allCoins = coins
             }
             .store(in: &subscriptions)
         
@@ -96,9 +100,19 @@ private extension LivePricesViewModel {
                 if self.allCoins.isEmpty && !allCoins.isEmpty {
                     self.hideLaunchScreenPublisher.send()
                 }
+                self.allConstCoins = allCoins
                 self.allCoins = allCoins
                 self.isLoading = false
             })
+            .store(in: &subscriptions)
+        
+        $allCoins
+            .combineLatest(repository.$storedCoins)
+            .map(mapAllCoinsToPortfolioCoins)
+            .sink { [weak self] coins in
+                guard let self = self else { return }
+                self.portfolioCoins = self.sortPortfolioCoinsIfNeeded(coins)
+            }
             .store(in: &subscriptions)
     }
     
@@ -112,10 +126,10 @@ private extension LivePricesViewModel {
     func filterCoins(_ coins: [Coin], text: String) -> [Coin] {
         let lowercasedText = text.lowercased()
         if lowercasedText.isEmpty {
-            return allCoins
+            return allConstCoins
         }
         
-        return allCoins.filter { (coin) -> Bool in
+        return allConstCoins.filter { (coin) -> Bool in
             return coin.name.lowercased().contains(lowercasedText) ||
             coin.symbol.lowercased().contains(lowercasedText) ||
             coin.id.lowercased().contains(lowercasedText)
@@ -137,6 +151,25 @@ private extension LivePricesViewModel {
         case .priceReversed:
             return coins.sorted(by: { $0.currentPrice < $1.currentPrice })
             
+        }
+    }
+    
+    func mapAllCoinsToPortfolioCoins(_ coins: [Coin], portfolioCoins: [Coin]) -> [Coin] {
+        coins
+            .compactMap { (coin) -> Coin? in
+                guard let firstCoin = portfolioCoins.first(where: { $0.id == coin.id }) else { return nil }
+                return firstCoin
+            }
+    }
+    
+    func sortPortfolioCoinsIfNeeded(_ coins: [Coin]) -> [Coin] {
+        switch sortOption {
+        case .holdings:
+            return coins.sorted(by: { $0.currentHoldingsValue > $1.currentHoldingsValue })
+        case .holdingsReversed:
+            return coins.sorted(by: { $0.currentHoldingsValue < $1.currentHoldingsValue })
+        default:
+            return coins
         }
     }
 }

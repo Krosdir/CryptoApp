@@ -12,11 +12,10 @@ class LivePricesRepository {
     private let networkService: LivePricesNetworkStrategy
     private let storageService: LivePricesStorageStrategy
     
-    private var storedCoins: [Coin] = []
-    
     private var subscriptions = Set<AnyCancellable>()
     
     @Published var allCoins: [Coin] = []
+    @Published var storedCoins: [Coin] = []
     
     init(
         networkService: LivePricesNetworkStrategy,
@@ -32,22 +31,8 @@ class LivePricesRepository {
         networkService.getCoins()
     }
     
-    func getStoredCoins(completion: @escaping ([Coin]) -> Void) {
-        storageService.getCoinEnities { [weak self] result in
-            switch result {
-            case .failure(let error):
-                print(error.localizedDescription)
-            case .success(let coinEntities):
-                guard let self = self else { return }
-                let coins = self.allCoins.compactMap { (coin) -> Coin? in
-                    guard let entity = coinEntities.first(where: { $0.coinId == coin.id }) else { return nil }
-                    
-                    return coin.updateHoldings(amount: entity.amount)
-                }
-                self.storedCoins = coins
-                completion(coins)
-            }
-        }
+    func getPortfolioCoins() {
+        storageService.getPortfolioCoins()
     }
 }
 
@@ -65,6 +50,20 @@ private extension LivePricesRepository {
             }, receiveValue: { [weak self] coins in
                 self?.allCoins = coins
             })
+            .store(in: &subscriptions)
+        
+        $allCoins
+            .combineLatest(storageService.coinEntitiesSignal)
+            .map { (coins, coinEntities) -> [Coin] in
+                coins.compactMap { (coin) -> Coin? in
+                    guard let entity = coinEntities.first(where: { $0.coinId == coin.id }) else { return nil }
+                    
+                    return coin.updateHoldings(amount: entity.amount)
+                }
+            }
+            .sink { [weak self] storedCoins in
+                self?.storedCoins = storedCoins
+            }
             .store(in: &subscriptions)
     }
 }

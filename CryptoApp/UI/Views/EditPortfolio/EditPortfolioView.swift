@@ -53,7 +53,7 @@ struct EditPortfolioView: View {
 
 struct EditPortfolioView_Previews: PreviewProvider {
     static var previews: some View {
-        EditPortfolioView(viewModel: EditProfileViewModel())
+        EditPortfolioView(viewModel: EditProfileViewModel(repository: EditPortfolioRepository(storageService: EditPortfolioStorageService(context: dev.context), with: [dev.coin])))
     }
 }
 
@@ -133,6 +133,13 @@ private extension EditPortfolioView {
     func didChooseCoin(_ coin: Coin) {
         withAnimation(.easeIn) {
             selectedCoin = coin
+            
+            if let portfolioCoin = viewModel.storedCoins.first(where: { $0.id == coin.id }),
+               let amount = portfolioCoin.currentHoldings {
+                quantityText = "\(amount)"
+            } else {
+                quantityText = ""
+            }
         }
     }
     
@@ -147,7 +154,10 @@ private extension EditPortfolioView {
     }
     
     func didTapSaveButton() {
-        guard let coin = selectedCoin else { return }
+        guard let coin = selectedCoin,
+              let amount = Double(quantityText) else { return }
+        
+        viewModel.storeCoin(coin, amount: amount)
         
         withAnimation(.easeIn) {
             showCheckmark = true

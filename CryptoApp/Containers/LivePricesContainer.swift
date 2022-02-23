@@ -11,6 +11,7 @@ import UIKit
 public class LivePricesContainer {
     
     let coordinator: LivePricesCoordinator
+    let coreDataStack: CoreDataStack
     
     // MARK: - Methods
     public init(appContainer: AppContainer) {
@@ -23,6 +24,7 @@ public class LivePricesContainer {
         }
 
         self.coordinator = makeLivePricesCoordinator()
+        self.coreDataStack = appContainer.coreDataStack
         coordinator.container = self
     }
 }
@@ -34,7 +36,8 @@ extension LivePricesContainer {
     }
     
     func makeEditPortfolioViewModel(with coins: [Coin]) -> EditProfileViewModel {
-        let viewModel = EditProfileViewModel()
+        let repository = makeEditPortfolioRepository(with: coins)
+        let viewModel = EditProfileViewModel(repository: repository)
         viewModel.allCoins = coins
         return viewModel
     }
@@ -58,9 +61,17 @@ private extension LivePricesContainer {
         #endif
     }
     
+    func makeLivePricesStorageService() -> LivePricesStorageStrategy {
+        return LivePricesStorageService(context: coreDataStack.mainContext)
+    }
+    
     func makeLivePricesRepository() -> LivePricesRepository {
         let networkService = makeLivePricesNetworkService()
-        return LivePricesRepository(networkService: networkService)
+        let storageService = makeLivePricesStorageService()
+        return LivePricesRepository(
+            networkService: networkService,
+            storageService: storageService
+        )
     }
     
     // Coin Details
@@ -71,5 +82,15 @@ private extension LivePricesContainer {
     func makeCoinDetailsRepository() -> CoinDetailsRepository {
         let networkService = makeCoinDetailsNetworkService()
         return CoinDetailsRepository(networkService: networkService)
+    }
+    
+    // Edit Portfolio
+    func makeEditPortfolioStorageService() -> EditPortfolioStorageStrategy {
+        return EditPortfolioStorageService(context: coreDataStack.mainContext)
+    }
+    
+    func makeEditPortfolioRepository(with coins: [Coin]) -> EditPortfolioRepository {
+        let storageService = makeEditPortfolioStorageService()
+        return EditPortfolioRepository(storageService: storageService, with: coins)
     }
 }

@@ -8,14 +8,18 @@
 import SwiftUI
 
 struct CoinRowView: View {
-    let coin: Coin
-    let showHoldingsCulums: Bool
+    @ObservedObject var viewModel: CoinRowViewModel
+    
+    init(coin: Coin, showHoldingsCulums: Bool) {
+        let wrappedViewModel = CoinRowViewModel(coin: coin, showHoldingsCulums: showHoldingsCulums)
+        _viewModel = ObservedObject(wrappedValue: wrappedViewModel)
+    }
     
     var body: some View {
         HStack(spacing: 0) {
             leftColumn
             Spacer()
-            if showHoldingsCulums {
+            if viewModel.showHoldingsCulums {
                 middleColumn
             }
             rightColumn
@@ -33,13 +37,13 @@ struct CoinRowView_Previews: PreviewProvider {
 private extension CoinRowView {
     var leftColumn: some View {
         HStack(spacing: 0) {
-            Text("\(coin.rank)")
+            Text("\(viewModel.coin.rank)")
                 .font(.caption)
                 .foregroundColor(.theme.secondaryText)
                 .frame(minWidth: 30)
-            CoinImageView(coin: coin)
+            CoinImageView(coin: viewModel.coin)
                 .frame(width: 30, height: 30)
-            Text(coin.symbol.uppercased())
+            Text(viewModel.coin.symbol.uppercased())
                 .font(.headline)
                 .padding(.leading, 6)
                 .foregroundColor(.theme.accent)
@@ -48,12 +52,12 @@ private extension CoinRowView {
     
     var rightColumn: some View {
         VStack (alignment: .trailing){
-            Text(coin.currentPrice.asCurrencyWith6Decimals())
+            Text(viewModel.coin.currentPrice.asCurrencyWith6Decimals())
                 .bold()
                 .foregroundColor(.theme.accent)
-            Text((coin.priceChangePercentage24H ?? 0).asPersantageString())
+            Text((viewModel.coin.priceChangePercentage24H ?? 0).asPersantageString())
                 .foregroundColor(
-                    (coin.priceChangePercentage24H ?? 0) >= 0 ?
+                    (viewModel.coin.priceChangePercentage24H ?? 0) >= 0 ?
                         .theme.green :
                             .theme.red
                 )
@@ -63,9 +67,9 @@ private extension CoinRowView {
     
     var middleColumn: some View {
         VStack (alignment: .trailing){
-            Text(coin.currentHoldingsValue.asCurrencyWith2Decimals())
+            Text(viewModel.coin.currentHoldingsValue.asCurrencyWith2Decimals())
                 .bold()
-            Text((coin.currentHoldings ?? 0).asNumberString())
+            Text((viewModel.coin.currentHoldings ?? 0).asNumberString())
         }
         .foregroundColor(.theme.accent)
     }

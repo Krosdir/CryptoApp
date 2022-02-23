@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 import SwiftUI
 
 extension PreviewProvider {
@@ -19,6 +20,7 @@ class DeveloperPreview {
     
     private init() {}
     
+    let context = CoreDataStack(modelName: "CryptoAppModel").mainContext
     let stats = StatisticsInfo(title: "Market Cap", value: "$23.4Bn", percentageChange: 26.23)
     
     let coin = Coin(

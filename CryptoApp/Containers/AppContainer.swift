@@ -11,8 +11,8 @@ import UIKit
 public class AppContainer {
     
     // MARK: - Long-Lived Dependancies
-    
     let appCoordinator: AppCoordinator
+    let coreDataStack: CoreDataStack
     
     // MARK: - Methods
     public init() {
@@ -45,7 +45,13 @@ public class AppContainer {
             )
         }
         
+        func makeCoreDataStack() -> CoreDataStack {
+            let modelName = (Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String ?? "") + "Model"
+            return CoreDataStack(modelName: modelName)
+        }
+        
         appCoordinator = makeAppCoordinator()
+        coreDataStack = makeCoreDataStack()
         makeChildrenCoordinators()
         appCoordinator.container = self
     }

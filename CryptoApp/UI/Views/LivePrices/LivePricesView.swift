@@ -72,7 +72,7 @@ private extension LivePricesView {
     
     var allCoinsList: some View {
         List {
-            ForEach(viewModel.filteredCoins) { coin in
+            ForEach(viewModel.allCoins) { coin in
                 Button { didTapCoinRow(with: coin) } label: {
                     CoinRowView(coin: coin, showHoldingsCulums: false)
                         .padding(.horizontal, -10)
@@ -86,8 +86,11 @@ private extension LivePricesView {
     var portfolioCoinsList: some View {
         List {
             ForEach(viewModel.portfolioCoins) { coin in
-                CoinRowView(coin: coin, showHoldingsCulums: true)
-                    .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
+                Button { didTapCoinRow(with: coin) } label: {
+                    CoinRowView(coin: coin, showHoldingsCulums: true)
+                        .padding(.horizontal, -10)
+                }
+                .listRowBackground(Color.theme.background)
             }
         }
         .listStyle(.plain)

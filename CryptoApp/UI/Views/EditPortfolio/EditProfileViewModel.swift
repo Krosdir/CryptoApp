@@ -9,6 +9,8 @@ import Combine
 import Foundation
 
 class EditProfileViewModel: ObservableObject {
+    private let repository: EditPortfolioRepository
+    var storedCoins: [Coin] = []
     
     var subscriptions = Set<AnyCancellable>()
     
@@ -17,8 +19,18 @@ class EditProfileViewModel: ObservableObject {
     @Published var allCoins: [Coin] = []
     @Published var filteredCoins: [Coin] = []
     
-    init() {
+    private let updatePortfolioPublisher =  PassthroughSubject<Void, Never>()
+    var updatePortfolioSignal: AnyPublisher<Void, Never> {
+        updatePortfolioPublisher.eraseToAnyPublisher()
+    }
+    
+    init(repository: EditPortfolioRepository) {
+        self.repository = repository
         addSubscribers()
+    }
+    
+    func storeCoin(_ coin: Coin, amount: Double) {
+        repository.updateCoin(coin, amount: amount)
     }
 }
 
@@ -40,6 +52,13 @@ private extension EditProfileViewModel {
             }
             .sink { [weak self] coins in
                 self?.filteredCoins = coins
+            }
+            .store(in: &subscriptions)
+        
+        repository.$storedCoins
+            .sink { [weak self] storedCoins in
+                self?.storedCoins = storedCoins ?? []
+                self?.updatePortfolioPublisher.send()
             }
             .store(in: &subscriptions)
     }
