@@ -152,6 +152,8 @@ private extension LivePricesView {
     }
     
     func didTapSort(with sort: LivePricesViewModel.SortOptions) {
-        viewModel.didTapSort(with: sort)
+        withAnimation(.spring()) {
+            viewModel.didTapSort(with: sort)
+        }
     }
 }

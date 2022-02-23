@@ -53,7 +53,7 @@ private extension InfoView {
     var generalSection: some View {
         Section {
             VStack(alignment: .leading) {
-                Image(systemName: "bitcoinsign.square.fill")
+                Image(systemName: "bitcoinsign.circle")
                     .resizable()
                     .frame(width: 100, height: 100)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
