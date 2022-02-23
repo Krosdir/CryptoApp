@@ -53,14 +53,7 @@ class LivePricesViewModel: ObservableObject {
     
     func getCoins() {
         isLoading = true
-        self.repository.getCoins { [weak self] coins in
-            guard let self = self else { return }
-            if self.allCoins.isEmpty {
-                self.hideLaunchScreenPublisher.send()
-            }
-            self.allCoins = coins
-            self.isLoading = false
-        }
+        repository.getCoins()
     }
     
     func didTapEditPortfolio() {
@@ -94,6 +87,18 @@ private extension LivePricesViewModel {
                 
                 self?.filteredCoins = coins
             }
+            .store(in: &subscriptions)
+        
+        repository.$allCoins
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] allCoins in
+                guard let self = self else { return }
+                if self.allCoins.isEmpty && !allCoins.isEmpty {
+                    self.hideLaunchScreenPublisher.send()
+                }
+                self.allCoins = allCoins
+                self.isLoading = false
+            })
             .store(in: &subscriptions)
     }
     

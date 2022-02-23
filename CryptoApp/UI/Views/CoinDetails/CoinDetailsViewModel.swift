@@ -30,20 +30,32 @@ class CoinDetailsViewModel: ObservableObject {
     ) {
         self.coin = coin
         self.repository = repository
+        self.addSubscribers()
         
         self.overviewStatistics = getOverviewStats()
         
         self.isLoading = true
-        self.repository.getDetails(for: coin) { [weak self] coinDetails in
-            guard let self = self else { return }
-            self.coinDetails = coinDetails
-            self.description = coinDetails.description?.en?.removingHTMLOccurances
-            self.websiteLink = coinDetails.links?.homepage?.first
-            self.redditLink = coinDetails.links?.subredditURL
-            
-            self.additionalStatistics = self.getAdditionalStats()
-            self.isLoading = false
-        }
+        self.repository.getDetails(for: coin)
+    }
+}
+
+private extension CoinDetailsViewModel {
+    func addSubscribers() {
+        repository.$coinDetails
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] coinDetails in
+                guard let self = self,
+                      let details = coinDetails else { return }
+                self.coinDetails = details
+
+                self.description = details.description?.en?.removingHTMLOccurances
+                self.websiteLink = details.links?.homepage?.first
+                self.redditLink = details.links?.subredditURL
+                
+                self.additionalStatistics = self.getAdditionalStats()
+                self.isLoading = false
+            }
+            .store(in: &subscriptions)
     }
 }
 

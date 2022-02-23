@@ -10,10 +10,16 @@ import Foundation
 
 class LivePricesNetworkService: NetworkService {
     private var allCoinsSubscription: AnyCancellable?
+    
+    private let allCoinsPublisher = PassthroughSubject<[Coin], Error>()
 }
 
 extension LivePricesNetworkService: LivePricesNetworkStrategy {
-    func getCoins(completion: @escaping (Result<[Coin], Error>) -> Void) {
+    var allCoinsSignal: AnyPublisher<[Coin], Error> {
+        allCoinsPublisher.eraseToAnyPublisher()
+    }
+    
+    func getCoins() {
         let parameters: Parameters = [
             "vs_currency": "usd",
             "order": "market_cap_desc",
@@ -33,16 +39,16 @@ extension LivePricesNetworkService: LivePricesNetworkStrategy {
         
         allCoinsSubscription = fetchDataPublisher(from: url)
             .decode(type: [Coin].self, decoder: JSONDecoder())
-            .sink { subscribeCompletion in
+            .sink { [weak self] subscribeCompletion in
                 switch subscribeCompletion {
                 case .finished:
                     break
                 case .failure(let error):
                     print(error.localizedDescription)
-                    completion(.failure(error))
+                    self?.allCoinsPublisher.send(completion: .failure(error))
                 }
             } receiveValue: { [weak self] coins in
-                completion(.success(coins))
+                self?.allCoinsPublisher.send(coins)
                 self?.allCoinsSubscription?.cancel()
             }
     }

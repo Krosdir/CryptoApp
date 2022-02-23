@@ -42,7 +42,7 @@ struct LivePricesView: View {
 
 struct LivePricesView_Previews: PreviewProvider {
     static var previews: some View {
-        LivePricesView(viewModel: LivePricesViewModel(repository: LivePricesRepository(networkService: LivePricesNetworkService())))
+        LivePricesView(viewModel: LivePricesViewModel(repository: LivePricesRepository(networkService: LivePricesNetworkService(), storageService: LivePricesStorageService(context: dev.context))))
     }
 }
 

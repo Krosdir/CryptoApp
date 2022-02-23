@@ -10,13 +10,16 @@ import Foundation
 
 class CoinDetailsNetworkService: NetworkService {
     private var coinDetailsSubscription: AnyCancellable?
+    
+    private let detailsPublisher = PassthroughSubject<CoinDetails, Error>()
 }
 
 extension CoinDetailsNetworkService: CoinDetailsNetworkStrategy {
-    func getDetails(
-        for coin: Coin,
-        completion: @escaping (Result<CoinDetails, Error>) -> Void
-    ) {
+    var detailsSignal: AnyPublisher<CoinDetails, Error> {
+        detailsPublisher.eraseToAnyPublisher()
+    }
+    
+    func getDetails(for coin: Coin) {
         let parameters: Parameters = [
             "localization": false,
             "tickers": false,
@@ -36,16 +39,16 @@ extension CoinDetailsNetworkService: CoinDetailsNetworkStrategy {
         
         coinDetailsSubscription = fetchDataPublisher(from: url)
             .decode(type: CoinDetails.self, decoder: JSONDecoder())
-            .sink { subscribeCompletion in
+            .sink { [weak self] subscribeCompletion in
                 switch subscribeCompletion {
                 case .finished:
                     break
                 case .failure(let error):
                     print(error.localizedDescription)
-                    completion(.failure(error))
+                    self?.detailsPublisher.send(completion: .failure(error))
                 }
             } receiveValue: { [weak self] coinDetails in
-                completion(.success(coinDetails))
+                self?.detailsPublisher.send(coinDetails)
                 self?.coinDetailsSubscription?.cancel()
             }
     }

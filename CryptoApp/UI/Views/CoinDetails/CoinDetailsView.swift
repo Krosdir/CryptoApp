@@ -39,6 +39,7 @@ struct CoinDetailsView: View {
                         overviewCard
                         additionalCard
                     }
+                    .padding(.top, 4)
                     .padding(32)
                 }
             }
