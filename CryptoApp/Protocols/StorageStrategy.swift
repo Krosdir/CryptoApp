@@ -1,13 +1,13 @@
 //
-//  EditPortfolioStorageStrategy.swift
+//  StorageStrategy.swift
 //  CryptoApp
 //
-//  Created by Danil on 23.02.2022.
+//  Created by Danil on 24.02.2022.
 //
 
 import Foundation
 
-protocol EditPortfolioStorageStrategy: AnyObject {
+protocol StorageStrategy: AnyObject {
     var coinEntitiesSignal: Published<[CoinEntity]>.Publisher { get }
     func storeCoin(_ coin: Coin, amount: Double)
     func getPortfolioCoins()

@@ -49,7 +49,6 @@ extension LivePricesCoordinator {
     
     func makeEditPortfolioViewController(with coins: [Coin]) -> UIHostingController<EditPortfolioView> {
         let viewModel = container.makeEditPortfolioViewModel(with: coins)
-        subscribeToEditPortfolioViewModelPublishers(viewModel)
         return UIHostingController(rootView: EditPortfolioView(viewModel: viewModel))
     }
     
@@ -79,18 +78,6 @@ private extension LivePricesCoordinator {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.parent?.pop(animated: true)
-            }
-            .store(in: &viewModel.subscriptions)
-    }
-    
-    func subscribeToEditPortfolioViewModelPublishers(_ viewModel: EditProfileViewModel) {
-        viewModel.updatePortfolioSignal
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
-                guard let self = self,
-                      let firstController = self.rootNavigationController.viewControllers.first,
-                      let livePricesController = firstController as? UIHostingController<LivePricesView> else { return }
-                livePricesController.rootView.viewModel.getPortfolioCoins()
             }
             .store(in: &viewModel.subscriptions)
     }

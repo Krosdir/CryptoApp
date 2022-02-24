@@ -12,6 +12,7 @@ public class LivePricesContainer {
     
     let coordinator: LivePricesCoordinator
     let coreDataStack: CoreDataStack
+    let storageService: StorageStrategy
     
     // MARK: - Methods
     public init(appContainer: AppContainer) {
@@ -25,6 +26,7 @@ public class LivePricesContainer {
 
         self.coordinator = makeLivePricesCoordinator()
         self.coreDataStack = appContainer.coreDataStack
+        self.storageService = CoreDataStorageService(context: self.coreDataStack.mainContext)
         coordinator.container = self
     }
 }
@@ -61,13 +63,8 @@ private extension LivePricesContainer {
         #endif
     }
     
-    func makeLivePricesStorageService() -> LivePricesStorageStrategy {
-        return LivePricesStorageService(context: coreDataStack.mainContext)
-    }
-    
     func makeLivePricesRepository() -> LivePricesRepository {
         let networkService = makeLivePricesNetworkService()
-        let storageService = makeLivePricesStorageService()
         return LivePricesRepository(
             networkService: networkService,
             storageService: storageService
@@ -85,12 +82,7 @@ private extension LivePricesContainer {
     }
     
     // Edit Portfolio
-    func makeEditPortfolioStorageService() -> EditPortfolioStorageStrategy {
-        return EditPortfolioStorageService(context: coreDataStack.mainContext)
-    }
-    
     func makeEditPortfolioRepository(with coins: [Coin]) -> EditPortfolioRepository {
-        let storageService = makeEditPortfolioStorageService()
         return EditPortfolioRepository(storageService: storageService, with: coins)
     }
 }

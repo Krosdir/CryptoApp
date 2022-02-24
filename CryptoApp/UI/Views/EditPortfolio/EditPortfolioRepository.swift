@@ -9,14 +9,14 @@ import Combine
 import Foundation
 
 class EditPortfolioRepository {
-    private let storageService: EditPortfolioStorageStrategy
+    private let storageService: StorageStrategy
     private let coins: [Coin]
     private var subscription = Set<AnyCancellable>()
     
     @Published var storedCoins: [Coin]?
     
     init(
-        storageService: EditPortfolioStorageStrategy,
+        storageService: StorageStrategy,
         with coins: [Coin]
     ) {
         self.storageService = storageService

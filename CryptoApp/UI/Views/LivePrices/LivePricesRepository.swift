@@ -10,7 +10,7 @@ import Foundation
 
 class LivePricesRepository {
     private let networkService: LivePricesNetworkStrategy
-    private let storageService: LivePricesStorageStrategy
+    private let storageService: StorageStrategy
     
     private var subscriptions = Set<AnyCancellable>()
     
@@ -19,7 +19,7 @@ class LivePricesRepository {
     
     init(
         networkService: LivePricesNetworkStrategy,
-        storageService: LivePricesStorageStrategy
+        storageService: StorageStrategy
     ) {
         self.networkService = networkService
         self.storageService = storageService

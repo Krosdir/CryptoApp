@@ -1,14 +1,15 @@
 //
-//  EditPortfolioStorageService.swift
+//  CoreDataStorageService.swift
 //  CryptoApp
 //
-//  Created by Danil on 23.02.2022.
+//  Created by Danil on 24.02.2022.
 //
 
+import Combine
 import CoreData
 import Foundation
 
-class EditPortfolioStorageService: EditPortfolioStorageStrategy {
+class CoreDataStorageService: StorageStrategy {
     private let context: NSManagedObjectContext
     
     @Published private var storedEntities: [CoinEntity] = []
@@ -42,7 +43,7 @@ class EditPortfolioStorageService: EditPortfolioStorageStrategy {
     }
 }
 
-private extension EditPortfolioStorageService {
+private extension CoreDataStorageService {
     func addCoin(_ coin: Coin, amount: Double) {
         let entity = CoinEntity(context: context)
         entity.coinId = coin.id

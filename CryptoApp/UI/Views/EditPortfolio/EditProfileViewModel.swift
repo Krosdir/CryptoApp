@@ -19,11 +19,6 @@ class EditProfileViewModel: ObservableObject {
     @Published var allCoins: [Coin] = []
     @Published var filteredCoins: [Coin] = []
     
-    private let updatePortfolioPublisher =  PassthroughSubject<Void, Never>()
-    var updatePortfolioSignal: AnyPublisher<Void, Never> {
-        updatePortfolioPublisher.eraseToAnyPublisher()
-    }
-    
     init(repository: EditPortfolioRepository) {
         self.repository = repository
         addSubscribers()
@@ -58,7 +53,6 @@ private extension EditProfileViewModel {
         repository.$storedCoins
             .sink { [weak self] storedCoins in
                 self?.storedCoins = storedCoins ?? []
-                self?.updatePortfolioPublisher.send()
             }
             .store(in: &subscriptions)
     }

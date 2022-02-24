@@ -53,7 +53,7 @@ struct EditPortfolioView: View {
 
 struct EditPortfolioView_Previews: PreviewProvider {
     static var previews: some View {
-        EditPortfolioView(viewModel: EditProfileViewModel(repository: EditPortfolioRepository(storageService: EditPortfolioStorageService(context: dev.context), with: [dev.coin])))
+        EditPortfolioView(viewModel: EditProfileViewModel(repository: EditPortfolioRepository(storageService: CoreDataStorageService(context: dev.context), with: [dev.coin])))
     }
 }
 
