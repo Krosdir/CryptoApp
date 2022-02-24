@@ -10,7 +10,7 @@ import UIKit
 
 public class AppCoordinator: Coordinator {
     
-    var container: AppContainer!
+    var container: AppContainer?
     let tabBarController = UITabBarController()
     
     public override init(
@@ -26,7 +26,7 @@ public class AppCoordinator: Coordinator {
     }
     
     override func start() {
-        let launchViewController = makeLaunchViewController()
+        let launchViewController = makeLaunchViewController() ?? UIViewController()
         rootNavigationController.pushViewController(launchViewController, animated: false)
         
         children.forEach({ $0.start() })
@@ -48,8 +48,8 @@ public class AppCoordinator: Coordinator {
 }
 
 extension AppCoordinator {
-    func makeLaunchViewController() -> UIHostingController<LaunchView> {
-        let viewModel = container.makeLaunchViewModel()
+    func makeLaunchViewController() -> UIHostingController<LaunchView>? {
+        guard let viewModel = container?.makeLaunchViewModel() else { return nil }
         return UIHostingController(rootView: LaunchView(viewModel: viewModel))
     }
     

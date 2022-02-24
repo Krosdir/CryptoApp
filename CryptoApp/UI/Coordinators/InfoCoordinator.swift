@@ -10,7 +10,7 @@ import UIKit
 
 public class InfoCoordinator: Coordinator {
     
-    weak var container: LivePricesContainer!
+    var container: LivePricesContainer?
     
     public override init(
         root: UINavigationController,
