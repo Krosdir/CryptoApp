@@ -13,6 +13,9 @@ public class AppContainer {
     // MARK: - Long-Lived Dependancies
     let appCoordinator: AppCoordinator
     let coreDataStack: CoreDataStack
+    lazy var livePricesContainer: LivePricesContainer = {
+        return LivePricesContainer(appContainer: self)
+    }()
     
     // MARK: - Methods
     public init() {
@@ -22,18 +25,12 @@ public class AppContainer {
         }
         
         func makeChildrenCoordinators() {
-            let livePricesCoordinator = makeLivePricesCoordinator()
             let infoCoordinator = makeInfoCoordinator()
             
             appCoordinator.children = [
-                livePricesCoordinator,
+                livePricesContainer.coordinator,
                 infoCoordinator
             ]
-        }
-        
-        func makeLivePricesCoordinator() -> Coordinator {
-            let livePricesContainer = LivePricesContainer(appContainer: self)
-            return livePricesContainer.coordinator
         }
         
         func makeInfoCoordinator() -> Coordinator {

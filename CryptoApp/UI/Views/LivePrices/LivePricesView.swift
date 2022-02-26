@@ -84,16 +84,27 @@ private extension LivePricesView {
     }
     
     var portfolioCoinsList: some View {
-        List {
-            ForEach(viewModel.portfolioCoins) { coin in
-                Button { didTapCoinRow(with: coin) } label: {
-                    CoinRowView(coin: coin, showHoldingsCulums: true)
-                        .padding(.horizontal, -10)
+        Group {
+            if viewModel.portfolioCoins.isEmpty {
+                Text("There are no coins in your portfolio.")
+                    .font(.headline)
+                    .foregroundColor(.theme.accent)
+                    .animation(.none)
+                    .padding(.top, 50)
+                
+            } else {
+                List {
+                    ForEach(viewModel.portfolioCoins) { coin in
+                        Button { didTapCoinRow(with: coin) } label: {
+                            CoinRowView(coin: coin, showHoldingsCulums: true)
+                                .padding(.horizontal, -10)
+                        }
+                        .listRowBackground(Color.theme.background)
+                    }
                 }
-                .listRowBackground(Color.theme.background)
+                .listStyle(.plain)
             }
         }
-        .listStyle(.plain)
     }
     
     var columnTitles: some View {

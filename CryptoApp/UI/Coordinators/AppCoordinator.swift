@@ -10,7 +10,7 @@ import UIKit
 
 public class AppCoordinator: Coordinator {
     
-    var container: AppContainer?
+    weak var container: AppContainer?
     let tabBarController = UITabBarController()
     
     public override init(

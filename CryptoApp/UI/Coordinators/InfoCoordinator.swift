@@ -9,9 +9,6 @@ import SwiftUI
 import UIKit
 
 public class InfoCoordinator: Coordinator {
-    
-    var container: LivePricesContainer?
-    
     public override init(
         root: UINavigationController,
         parent: Coordinator?
